@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phương Diễm | Không Gian Cá Nhân & Sáng Tạo</title>
+
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tải Google Fonts: Cormorant Garamond (tiêu đề mềm mại) & Plus Jakarta Sans (nội dung hiện đại) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Cấu hình Tailwind mở rộng -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        sakura: {
+                            50: '#fff5f7',
+                            100: '#ffe3e8',
+                            200: '#ffc9d4',
+                            300: '#ffa1b5',
+                            400: '#ff6b8b',
+                            500: '#f43f67',
+                            600: '#e11d48',
+                            800: '#9f1239',
+                            900: '#881337',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-sakura-50 text-stone-700 font-sans antialiased selection:bg-sakura-200 selection:text-sakura-900 overflow-x-hidden relative">
+
+    <!-- Canvas hiệu ứng hoa anh đào rơi (Nền cố định, không cản trở thao tác chuột/chạm) -->
+    <canvas id="sakura-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-40"></canvas>
+
+    <!-- Dải ánh sáng nền trang trí mềm mại -->
+    <div
+        class="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-gradient-to-br from-sakura-200/40 to-transparent blur-3xl pointer-events-none z-0">
+    </div>
+    <div
+        class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-gradient-to-tl from-rose-200/40 to-transparent blur-3xl pointer-events-none z-0">
+    </div>
+
+    <!-- Thanh điều hướng (Header) -->
+    <header
+        class="sticky top-0 z-30 bg-white/75 backdrop-blur-md border-b border-sakura-100 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <!-- Logo / Tên thương hiệu cá nhân -->
+                <a href="#home" class="flex items-center space-x-2.5 group">
+                    <span
+                        class="w-9 h-9 rounded-full bg-gradient-to-tr from-sakura-400 to-rose-300 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+                        <!-- Biểu tượng cánh hoa SVG tối giản -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C9.5 6 7 8.5 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 8.5 14.5 6 12 2ZM12 22C12 22 14.5 19.5 16.5 17.5C15.2 18.4 13.7 19 12 19C10.3 19 8.8 18.4 7.5 17.5C9.5 19.5 12 22 12 22Z" />
+                        </svg>
+                    </span>
+                    <span class="font-serif text-2xl sm:text-3xl font-semibold tracking-wide text-stone-800">
+                        Phương Diễm
+                    </span>
+                </a>
+
+                <!-- Menu trên PC -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-stone-600">
+                    <a href="#home" class="hover:text-sakura-500 transition-colors py-2">Trang chủ</a>
+                    <a href="#about" class="hover:text-sakura-500 transition-colors py-2">Giới thiệu</a>
+                    <a href="#skills" class="hover:text-sakura-500 transition-colors py-2">Kỹ năng & Đam mê</a>
+                    <a href="#portfolio" class="hover:text-sakura-500 transition-colors py-2">Dự án tiêu biểu</a>
+                    <a href="#contact"
+                        class="px-5 py-2.5 rounded-full bg-sakura-500 text-white hover:bg-sakura-600 shadow-sm hover:shadow transition-all">
+                        Kết nối
+                    </a>
+                </nav>
+
+                <!-- Nút mở menu trên Mobile -->
+                <button id="mobile-menu-btn" aria-label="Mở thực đơn"
+                    class="md:hidden p-2.5 rounded-xl text-stone-600 hover:bg-sakura-100/70 hover:text-sakura-600 transition-colors">
+                    <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                            d="M4 7h16M4 12h16M4 17h16" />
+                    </svg>
+                    <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu thả xuống trên Mobile -->
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-white/95 backdrop-blur-lg border-b border-sakura-100 px-4 pt-2 pb-6 space-y-2 shadow-lg">
+            <a href="#home"
+                class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-700 hover:bg-sakura-50 hover:text-sakura-600">Trang
+                chủ</a>
+            <a href="#about"
+                class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-700 hover:bg-sakura-50 hover:text-sakura-600">Giới
+                thiệu</a>
+            <a href="#skills"
+                class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-700 hover:bg-sakura-50 hover:text-sakura-600">Kỹ
+                năng & Đam mê</a>
+            <a href="#portfolio"
+                class="mobile-link block px-4 py-3 rounded-xl text-base font-medium text-stone-700 hover:bg-sakura-50 hover:text-sakura-600">Dự
+                án tiêu biểu</a>
+            <a href="#contact"
+                class="mobile-link block px-4 py-3 mt-2 text-center rounded-xl text-base font-medium bg-sakura-500 text-white hover:bg-sakura-600">Kết
+                nối với Diễm</a>
+        </div>
+    </header>
+
+    <!-- Nội dung chính -->
+    <main class="relative z-10">
+
+        <!-- 1. Phần mở đầu (Hero Section) -->
+        <section id="home" class="pt-14 pb-20 sm:pt-24 sm:pb-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+            <div class="text-center space-y-7">
+                <!-- Nhãn chào mừng nhỏ gọn -->
+                <div
+                    class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/80 border border-sakura-200 text-sakura-600 text-xs sm:text-sm font-medium shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-sakura-400 animate-pulse"></span>
+                    <span>Chào mừng đến với thế giới nhỏ của mình</span>
+                </div>
+
+                <!-- Tiêu đề chính -->
+                <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-semibold text-stone-800 leading-tight">
+                    Xin chào, mình là <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-sakura-500 to-rose-400 italic">
+                        Phương Diễm
+                    </span>
+                </h1>
+
+                <!-- Đường phân cách hoa anh đào tối giản -->
+                <div class="flex items-center justify-center space-x-3 text-sakura-300">
+                    <span class="w-12 h-px bg-sakura-200"></span>
+                    <svg class="w-5 h-5 text-sakura-400" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 2C9.5 6 7 8.5 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 8.5 14.5 6 12 2ZM12 22C12 22 14.5 19.5 16.5 17.5C15.2 18.4 13.7 19 12 19C10.3 19 8.8 18.4 7.5 17.5C9.5 19.5 12 22 12 22Z" />
+                    </svg>
+                    <span class="w-12 h-px bg-sakura-200"></span>
+                </div>
+
+                <!-- Đoạn mô tả -->
+                <p class="text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed font-normal">
+                    Một tâm hồn yêu cái đẹp, đam mê sáng tạo nội dung và thiết kế trải nghiệm tinh tế. Mình tin rằng sự
+                    dịu dàng, tỉ mỉ trong từng chi tiết nhỏ sẽ tạo nên những giá trị bền vững và chạm đến cảm xúc.
+                </p>
+
+                <!-- Các nút điều hướng -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                    <a href="#portfolio"
+                        class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-sakura-500 to-rose-400 text-white font-medium shadow-md shadow-sakura-200 hover:shadow-lg hover:translate-y-[-1px] transition-all text-center">
+                        Khám phá hành trình
+                    </a>
+                    <a href="#about"
+                        class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/90 text-stone-700 border border-sakura-200 font-medium hover:bg-sakura-50 hover:text-sakura-600 transition-all text-center">
+                        Tìm hiểu về mình
+                    </a>
+                </div>
+
+                <!-- Các chỉ số nhỏ tinh tế -->
+                <div class="grid grid-cols-3 gap-4 pt-10 mt-6 border-t border-sakura-200/60 max-w-lg mx-auto">
+                    <div>
+                        <p class="font-serif text-2xl sm:text-3xl font-bold text-sakura-600">03+</p>
+                        <p class="text-xs sm:text-sm text-stone-500 mt-0.5">Năm sáng tạo</p>
+                    </div>
+                    <div>
+                        <p class="font-serif text-2xl sm:text-3xl font-bold text-sakura-600">25+</p>
+                        <p class="text-xs sm:text-sm text-stone-500 mt-0.5">Dự án hoàn thiện</p>
+                    </div>
+                    <div>
+                        <p class="font-serif text-2xl sm:text-3xl font-bold text-sakura-600">100%</p>
+                        <p class="text-xs sm:text-sm text-stone-500 mt-0.5">Tâm huyết</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Phần Giới thiệu chi tiết (About Section) -->
+        <section id="about" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+            <div
+                class="bg-white/80 backdrop-blur-md rounded-3xl p-8 sm:p-12 lg:p-16 border border-sakura-100 shadow-sm">
+                <div class="max-w-3xl mx-auto text-center space-y-4 mb-12">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-sakura-500">Câu chuyện cá
+                        nhân</span>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-stone-800">Đôi nét về Phương Diễm</h2>
+                    <div class="w-16 h-0.5 bg-sakura-300 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    <div class="space-y-5 text-stone-600 leading-relaxed text-base">
+                        <p>
+                            Xin chào, mình là <strong class="text-stone-800 font-semibold">Phương Diễm</strong>. Mình
+                            lớn lên với niềm yêu thích đặc biệt dành cho nghệ thuật thị giác, những trang viết nhẹ nhàng
+                            và sắc hồng dịu dàng của mùa hoa anh đào.
+                        </p>
+                        <p>
+                            Trong công việc cũng như cuộc sống, mình luôn đề cao sự chân thành, chỉn chu và cảm xúc tự
+                            nhiên. Dù là xây dựng ý tưởng sáng tạo, thiết kế giao diện hay kể một câu chuyện thương
+                            hiệu, mình đều mong muốn mang lại cảm giác ấm áp và gần gũi nhất cho người đối diện.
+                        </p>
+                        <p>
+                            Ngoài thời gian làm việc, bạn có thể bắt gặp mình bên một tách trà hoa cúc ấm, đọc một cuốn
+                            tản văn hay ghi lại những khoảnh khắc bình yên qua ống kính máy ảnh.
+                        </p>
+                    </div>
+
+                    <!-- Bảng thông tin cá nhân thanh lịch -->
+                    <div class="bg-sakura-50/70 rounded-2xl p-6 sm:p-8 border border-sakura-100 space-y-4">
+                        <h3 class="font-serif text-2xl font-semibold text-stone-800 mb-4">Thông tin cơ bản</h3>
+
+                        <div class="flex justify-between py-2.5 border-b border-sakura-200/50 text-sm sm:text-base">
+                            <span class="text-stone-500">Họ và tên</span>
+                            <span class="font-medium text-stone-800">Phương Diễm</span>
+                        </div>
+                        <div class="flex justify-between py-2.5 border-b border-sakura-200/50 text-sm sm:text-base">
+                            <span class="text-stone-500">Lĩnh vực</span>
+                            <span class="font-medium text-stone-800">Sáng tạo Nội dung & Thiết kế</span>
+                        </div>
+                        <div class="flex justify-between py-2.5 border-b border-sakura-200/50 text-sm sm:text-base">
+                            <span class="text-stone-500">Nơi sinh sống</span>
+                            <span class="font-medium text-stone-800">Việt Nam</span>
+                        </div>
+                        <div class="flex justify-between py-2.5 border-b border-sakura-200/50 text-sm sm:text-base">
+                            <span class="text-stone-500">Sở thích</span>
+                            <span class="font-medium text-stone-800">Nhiếp ảnh, Trà đạo, Đọc sách</span>
+                        </div>
+                        <div class="flex justify-between py-2.5 text-sm sm:text-base">
+                            <span class="text-stone-500">Trạng thái</span>
+                            <span class="inline-flex items-center text-sakura-600 font-medium">
+                                <span class="w-2 h-2 rounded-full bg-sakura-500 mr-2"></span>
+                                Sẵn sàng hợp tác mới
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Kỹ năng & Đam mê (Skills Section) -->
+        <section id="skills" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto space-y-4 mb-14">
+                <span class="text-xs font-semibold uppercase tracking-widest text-sakura-500">Thế mạnh của mình</span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-stone-800">Kỹ năng & Đam mê</h2>
+                <p class="text-stone-600 text-sm sm:text-base">Sự kết hợp hài hòa giữa tư duy thẩm mỹ tinh tế và kỹ năng
+                    thực thi chuyên nghiệp.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Thẻ kỹ năng 1 -->
+                <div
+                    class="bg-white/85 backdrop-blur-sm rounded-3xl p-8 border border-sakura-100 hover:border-sakura-300 shadow-sm hover:shadow-md transition-all group">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-sakura-100 text-sakura-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-2xl font-semibold text-stone-800 mb-3">Sáng tạo Nội dung</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed mb-5">
+                        Xây dựng câu chuyện thương hiệu giàu cảm xúc, biên tập bài viết truyền cảm hứng và định hướng
+                        thông điệp truyền thông tinh tế.
+                    </p>
+                    <div class="w-full bg-sakura-100 rounded-full h-1.5">
+                        <div class="bg-sakura-400 h-1.5 rounded-full" style="width: 92%"></div>
+                    </div>
+                </div>
+
+                <!-- Thẻ kỹ năng 2 -->
+                <div
+                    class="bg-white/85 backdrop-blur-sm rounded-3xl p-8 border border-sakura-100 hover:border-sakura-300 shadow-sm hover:shadow-md transition-all group">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-sakura-100 text-sakura-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-2xl font-semibold text-stone-800 mb-3">Thiết kế Thẩm mỹ</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed mb-5">
+                        Phối hợp màu sắc hài hòa, thiết kế ấn phẩm truyền thông, giao diện trực quan mang phong cách tối
+                        giản và thanh lịch.
+                    </p>
+                    <div class="w-full bg-sakura-100 rounded-full h-1.5">
+                        <div class="bg-sakura-400 h-1.5 rounded-full" style="width: 88%"></div>
+                    </div>
+                </div>
+
+                <!-- Thẻ kỹ năng 3 -->
+                <div
+                    class="bg-white/85 backdrop-blur-sm rounded-3xl p-8 border border-sakura-100 hover:border-sakura-300 shadow-sm hover:shadow-md transition-all group sm:col-span-2 lg:col-span-1">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-sakura-100 text-sakura-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-2xl font-semibold text-stone-800 mb-3">Nhiếp ảnh & Nghệ thuật</h3>
+                    <p class="text-stone-600 text-sm leading-relaxed mb-5">
+                        Lưu giữ vẻ đẹp tự nhiên qua ánh sáng mềm mại, bố cục tinh tế, mang lại góc nhìn nghệ thuật cho
+                        từng sản phẩm và khoảnh khắc.
+                    </p>
+                    <div class="w-full bg-sakura-100 rounded-full h-1.5">
+                        <div class="bg-sakura-400 h-1.5 rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Dự án & Góc lưu giữ (Portfolio Section) -->
+        <section id="portfolio" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+                <div class="space-y-2">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-sakura-500">Dấu ấn cá nhân</span>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-stone-800">Dự án & Bộ sưu tập</h2>
+                </div>
+                <p class="text-stone-500 text-sm max-w-md">
+                    Những dự án tâm huyết mà mình đã thực hiện với tất cả sự tỉ mỉ và tình yêu dành cho cái đẹp.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dự án 1 -->
+                <article
+                    class="bg-white rounded-3xl overflow-hidden border border-sakura-100 shadow-sm hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 flex flex-col">
+                    <div class="h-56 overflow-hidden bg-sakura-100 relative">
+                        <img src="https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=800&q=80"
+                            alt="Tạp chí Mùa Hoa Anh Đào"
+                            onerror="this.onerror=null; this.src='https://placehold.co/600x400/ffc9d4/881337?text=Sakura+Journal';"
+                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <span
+                            class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-medium text-sakura-600">
+                            Biên tập & Nghệ thuật
+                        </span>
+                    </div>
+                    <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-serif text-2xl font-semibold text-stone-800 mb-2">Tạp chí Mùa Xuân</h3>
+                            <p class="text-stone-600 text-sm leading-relaxed mb-4">
+                                Chuỗi bài viết tản văn và bộ ảnh nghệ thuật tôn vinh vẻ đẹp dịu dàng của thiên nhiên và
+                                lối sống chậm.
+                            </p>
+                        </div>
+                        <div
+                            class="pt-4 border-t border-sakura-50 flex items-center justify-between text-xs font-medium text-sakura-500">
+                            <span>Năm 2025</span>
+                            <span>Hoàn thiện</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Dự án 2 -->
+                <article
+                    class="bg-white rounded-3xl overflow-hidden border border-sakura-100 shadow-sm hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 flex flex-col">
+                    <div class="h-56 overflow-hidden bg-sakura-100 relative">
+                        <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80"
+                            alt="Thương hiệu Trà & Hoa"
+                            onerror="this.onerror=null; this.src='https://placehold.co/600x400/ffc9d4/881337?text=Floral+Tea';"
+                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <span
+                            class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-medium text-sakura-600">
+                            Định hướng Thương hiệu
+                        </span>
+                    </div>
+                    <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-serif text-2xl font-semibold text-stone-800 mb-2">Hương Trà Thảo Mộc</h3>
+                            <p class="text-stone-600 text-sm leading-relaxed mb-4">
+                                Xây dựng bộ nhận diện hình ảnh, câu chuyện sản phẩm và trải nghiệm bao bì mang sắc thái
+                                nữ tính, thanh khiết.
+                            </p>
+                        </div>
+                        <div
+                            class="pt-4 border-t border-sakura-50 flex items-center justify-between text-xs font-medium text-sakura-500">
+                            <span>Năm 2025</span>
+                            <span>Hoàn thiện</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Dự án 3 -->
+                <article
+                    class="bg-white rounded-3xl overflow-hidden border border-sakura-100 shadow-sm hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 flex flex-col md:col-span-2 lg:col-span-1">
+                    <div class="h-56 overflow-hidden bg-sakura-100 relative">
+                        <img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=800&q=80"
+                            alt="Không gian Sống Tối Giản"
+                            onerror="this.onerror=null; this.src='https://placehold.co/600x400/ffc9d4/881337?text=Minimal+Space';"
+                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <span
+                            class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-medium text-sakura-600">
+                            Thiết kế Giao diện
+                        </span>
+                    </div>
+                    <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-serif text-2xl font-semibold text-stone-800 mb-2">Góc Nhỏ Bình Yên</h3>
+                            <p class="text-stone-600 text-sm leading-relaxed mb-4">
+                                Thiết kế không gian số chia sẻ kiến thức chăm sóc bản thân, cân bằng cảm xúc dành riêng
+                                cho phái đẹp hiện đại.
+                            </p>
+                        </div>
+                        <div
+                            class="pt-4 border-t border-sakura-50 flex items-center justify-between text-xs font-medium text-sakura-500">
+                            <span>Năm 2026</span>
+                            <span>Đang phát triển</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 5. Trích dẫn yêu thích -->
+        <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+            <div
+                class="bg-gradient-to-r from-sakura-100/80 via-rose-100/80 to-sakura-100/80 rounded-3xl p-8 sm:p-12 text-center border border-sakura-200/70">
+                <svg class="w-8 h-8 text-sakura-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                </svg>
+                <blockquote class="font-serif italic text-2xl sm:text-3xl text-stone-800 leading-relaxed mb-4">
+                    "Hãy sống như những cánh hoa anh đào: dịu dàng trước gió, rực rỡ đúng mùa và luôn mang lại niềm vui
+                    bình yên cho người ngắm nhìn."
+                </blockquote>
+                <cite class="not-italic text-sm font-medium text-sakura-600">— Phương Diễm</cite>
+            </div>
+        </section>
+
+        <!-- 6. Liên hệ (Contact Section) -->
+        <section id="contact" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+            <div
+                class="bg-white/90 backdrop-blur-md rounded-3xl p-8 sm:p-12 lg:p-16 border border-sakura-100 shadow-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+                    <!-- Thông tin liên hệ -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <span class="text-xs font-semibold uppercase tracking-widest text-sakura-500">Gửi lời
+                            nhắn</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl font-semibold text-stone-800">Kết nối cùng Phương
+                            Diễm</h2>
+                        <p class="text-stone-600 text-sm sm:text-base leading-relaxed">
+                            Nếu bạn có ý tưởng hợp tác thú vị hoặc đơn giản muốn gửi một lời chào thân thương, đừng ngần
+                            ngại để lại lời nhắn cho mình nhé.
+                        </p>
+
+                        <div class="space-y-4 pt-2">
+                            <!-- Email với chức năng sao chép nhanh -->
+                            <div
+                                class="flex items-center justify-between p-4 rounded-2xl bg-sakura-50/80 border border-sakura-100">
+                                <div class="flex items-center space-x-3 overflow-hidden">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-white text-sakura-500 flex items-center justify-center shrink-0 shadow-xs">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div class="truncate">
+                                        <p class="text-xs text-stone-400">Hộp thư điện tử</p>
+                                        <p id="email-text" class="text-sm font-medium text-stone-800 truncate">
+                                            phuongdiem.contact@gmail.com</p>
+                                    </div>
+                                </div>
+                                <button type="button" id="copy-email-btn"
+                                    class="ml-2 px-3 py-1.5 rounded-xl bg-white text-xs font-medium text-sakura-600 border border-sakura-200 hover:bg-sakura-500 hover:text-white transition-colors shrink-0">
+                                    Sao chép
+                                </button>
+                            </div>
+
+                            <!-- Địa điểm -->
+                            <div
+                                class="flex items-center space-x-3 p-4 rounded-2xl bg-sakura-50/80 border border-sakura-100">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-white text-sakura-500 flex items-center justify-center shrink-0 shadow-xs">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-stone-400">Khu vực làm việc</p>
+                                    <p class="text-sm font-medium text-stone-800">Quận 1, TP. Hồ Chí Minh</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biểu mẫu liên hệ -->
+                    <div class="lg:col-span-7">
+                        <form id="contact-form" class="space-y-5">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="sender-name" class="block text-sm font-medium text-stone-700 mb-1.5">Tên
+                                        của bạn</label>
+                                    <input type="text" id="sender-name" required placeholder="Nhập họ tên..."
+                                        class="w-full px-4 py-3 rounded-2xl bg-sakura-50/50 border border-sakura-200 text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-sakura-300 focus:bg-white transition-all">
+                                </div>
+                                <div>
+                                    <label for="sender-email"
+                                        class="block text-sm font-medium text-stone-700 mb-1.5">Địa chỉ Email</label>
+                                    <input type="email" id="sender-email" required placeholder="email@example.com"
+                                        class="w-full px-4 py-3 rounded-2xl bg-sakura-50/50 border border-sakura-200 text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-sakura-300 focus:bg-white transition-all">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="sender-message" class="block text-sm font-medium text-stone-700 mb-1.5">Nội
+                                    dung lời nhắn</label>
+                                <textarea id="sender-message" rows="4" required
+                                    placeholder="Chia sẻ điều bạn muốn nhắn gửi..."
+                                    class="w-full px-4 py-3 rounded-2xl bg-sakura-50/50 border border-sakura-200 text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-sakura-300 focus:bg-white transition-all resize-none"></textarea>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-sakura-500 to-rose-400 text-white font-medium shadow-md shadow-sakura-200 hover:shadow-lg hover:translate-y-[-1px] transition-all">
+                                Gửi lời nhắn đến Diễm
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Chân trang (Footer) -->
+    <footer class="relative z-10 border-t border-sakura-200/60 bg-white/60 backdrop-blur-sm py-8 px-4 sm:px-6 lg:px-8">
+        <div
+            class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-stone-500">
+            <div class="flex items-center space-x-2">
+                <span class="font-serif text-xl font-semibold text-stone-800">Phương Diễm</span>
+                <span>—</span>
+                <span>Không gian sáng tạo cá nhân</span>
+            </div>
+            <p class="text-xs sm:text-sm text-center sm:text-right">
+                Bản quyền thuộc về Phương Diễm. Thiết kế tinh tế dưới sắc hoa anh đào.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Hộp thông báo nổi (Thay thế hoàn toàn alert()) -->
+    <div id="toast-notification"
+        class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div
+            class="bg-white border border-sakura-200 shadow-xl rounded-2xl px-5 py-3.5 flex items-center space-x-3 max-w-sm">
+            <div class="w-8 h-8 rounded-full bg-sakura-100 text-sakura-500 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <p id="toast-message" class="text-sm font-medium text-stone-700">Thông báo</p>
+        </div>
+    </div>
+
+    <!-- Mã JavaScript điều khiển hiệu ứng hoa anh đào và tương tác giao diện -->
+    <script>
+            /**
+             * 1. HỆ THỐNG HIỆU ỨNG HOA ANH ĐÀO RƠI (HTML5 CANVAS)
+             * Tự động điều chỉnh mật độ cánh hoa theo kích thước màn hình PC hoặc Mobile
+             * để đảm bảo độ mượt mà 60fps và không che khuất nội dung đọc.
+             */
+            (function initSakuraEffect() {
+                const canvas = document.getElementById('sakura-canvas');
+                const ctx = canvas.getContext('2d');
+                let width = window.innerWidth;
+                let height = window.innerHeight;
+                let petals = [];
+
+                // Bảng màu hồng nữ tính tự nhiên cho từng cánh hoa
+                const petalColors = [
+                    'rgba(255, 183, 197, 0.78)', // Hồng phấn anh đào
+                    'rgba(255, 209, 220, 0.82)', // Hồng pastel nhạt
+                    'rgba(255, 158, 181, 0.70)', // Hồng đào dịu
+                    'rgba(255, 228, 235, 0.85)'  // Trắng phớt hồng
+                ];
+
+                // Cập nhật kích thước canvas khi xoay màn hình hoặc thay đổi kích thước cửa sổ
+                function resizeCanvas() {
+                    width = window.innerWidth;
+                    height = window.innerHeight;
+                    canvas.width = width;
+                    canvas.height = height;
+                }
+
+                // Lớp đại diện cho một cánh hoa anh đào
+                class SakuraPetal {
+                    constructor(initialRandomY = false) {
+                        this.reset(initialRandomY);
+                    }
+
+                    reset(initialRandomY = false) {
+                        this.x = Math.random() * width;
+                        this.y = initialRandomY ? Math.random() * height : -20;
+                        // Kích thước cánh hoa nhỏ gọn, tinh tế (từ 7px đến 14px)
+                        this.size = Math.random() * 7 + 7;
+                        // Tốc độ rơi nhẹ nhàng
+                        this.speedY = Math.random() * 0.9 + 0.5;
+                        // Độ chao liệng ngang theo gió
+                        this.speedX = Math.random() * 0.8 - 0.4;
+                        this.swing = Math.random() * Math.PI * 2;
+                        this.swingSpeed = Math.random() * 0.02 + 0.01;
+                        // Góc xoay và độ lật 3D giả lập
+                        this.rotation = Math.random() * Math.PI * 2;
+                        this.rotationSpeed = (Math.random() - 0.5) * 0.025;
+                        this.flip = Math.random() * Math.PI;
+                        this.flipSpeed = Math.random() * 0.03 + 0.01;
+                        this.color = petalColors[Math.floor(Math.random() * petalColors.length)];
+                    }
+
+                    update() {
+                        this.swing += this.swingSpeed;
+                        this.x += this.speedX + Math.sin(this.swing) * 0.6;
+                        this.y += this.speedY;
+                        this.rotation += this.rotationSpeed;
+                        this.flip += this.flipSpeed;
+
+                        // Khi cánh hoa rơi qua đáy màn hình hoặc trôi quá xa sang hai bên, tái tạo lại ở đỉnh
+                        if (this.y > height + 20 || this.x < -30 || this.x > width + 30) {
+                            this.reset(false);
+                        }
+                    }
+
+                    draw() {
+                        ctx.save();
+                        ctx.translate(this.x, this.y);
+                        ctx.rotate(this.rotation);
+                        // Hiệu ứng cánh hoa xoay nghiêng trong gió
+                        const scaleY = 0.6 + Math.abs(Math.sin(this.flip)) * 0.4;
+                        ctx.scale(1, scaleY);
+
+                        // Vẽ hình dáng cánh hoa anh đào với vết khía đặc trưng ở đầu cánh
+                        ctx.beginPath();
+                        const s = this.size;
+                        ctx.moveTo(0, 0);
+                        ctx.bezierCurveTo(-s * 0.6, -s * 0.4, -s * 0.8, -s * 1.2, -s * 0.15, -s * 1.4);
+                        ctx.lineTo(0, -s * 1.15); // Vết khía nhẹ ở đầu cánh hoa anh đào
+                        ctx.lineTo(s * 0.15, -s * 1.4);
+                        ctx.bezierCurveTo(s * 0.8, -s * 1.2, s * 0.6, -s * 0.4, 0, 0);
+                        ctx.closePath();
+
+                        ctx.fillStyle = this.color;
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+
+                // Khởi tạo số lượng cánh hoa phù hợp (Mobile ít hơn PC để tối ưu hiệu năng & tầm nhìn)
+                function createPetals() {
+                    petals = [];
+                    const isMobile = width < 768;
+                    const petalCount = isMobile ? 22 : 42;
+                    for (let i = 0; i < petalCount; i++) {
+                        petals.push(new SakuraPetal(true));
+                    }
+                }
+
+                // Vòng lặp hoạt ảnh
+                function animate() {
+                    ctx.clearRect(0, 0, width, height);
+                    for (let i = 0; i < petals.length; i++) {
+                        petals[i].update();
+                        petals[i].draw();
+                    }
+                    requestAnimationFrame(animate);
+                }
+
+                // Khởi chạy khi tải trang xong
+                window.addEventListener('load', () => {
+                    resizeCanvas();
+                    createPetals();
+                    animate();
+                });
+
+                // Cập nhật lại khi thay đổi kích thước màn hình
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        resizeCanvas();
+                        createPetals();
+                    }, 200);
+                });
+            })();
+
+        /**
+         * 2. TƯƠNG TÁC MENU MOBILE & THÔNG BÁO
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconOpen = document.getElementById('menu-icon-open');
+            const menuIconClose = document.getElementById('menu-icon-close');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            // Bật/tắt menu trên thiết bị di động
+            function toggleMobileMenu() {
+                const isHidden = mobileMenu.classList.contains('hidden');
+                if (isHidden) {
+                    mobileMenu.classList.remove('hidden');
+                    menuIconOpen.classList.add('hidden');
+                    menuIconClose.classList.remove('hidden');
+                } else {
+                    mobileMenu.classList.add('hidden');
+                    menuIconOpen.classList.remove('hidden');
+                    menuIconClose.classList.add('hidden');
+                }
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+            // Tự động đóng menu sau khi chạm vào liên kết trên điện thoại
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        toggleMobileMenu();
+                    }
+                });
+            });
+
+            // Hàm hiển thị thông báo nổi mềm mại
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            let toastTimeout;
+
+            function showToast(message) {
+                toastMessage.textContent = message;
+                toast.classList.remove('translate-y-24', 'opacity-0');
+
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.add('translate-y-24', 'opacity-0');
+                }, 3500);
+            }
+
+            // Chức năng sao chép địa chỉ Email
+            const copyEmailBtn = document.getElementById('copy-email-btn');
+            const emailText = document.getElementById('email-text').textContent;
+
+            copyEmailBtn.addEventListener('click', () => {
+                const tempInput = document.createElement('input');
+                tempInput.value = emailText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('Đã sao chép địa chỉ email của Phương Diễm.');
+                } catch (err) {
+                    showToast('Không thể sao chép tự động, vui lòng chọn thủ công.');
+                }
+                document.body.removeChild(tempInput);
+            });
+
+            // Xử lý gửi biểu mẫu liên hệ
+            const contactForm = document.getElementById('contact-form');
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const senderName = document.getElementById('sender-name').value.trim();
+                showToast(`Cảm ơn ${senderName}, lời nhắn đã được gửi đến Phương Diễm.`);
+                contactForm.reset();
+            });
+        });
+    </script>
+</body>
+
+</html>
